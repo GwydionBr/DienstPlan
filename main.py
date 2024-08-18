@@ -11,9 +11,7 @@ def main():
     # Get Month Data
     month_data = get_month_input()
     weekdays = get_weekday_list(month_data)
-    print(weekdays)
     workdays = calculate_month_workdays(weekdays)
-    print(workdays)
 
 
     # Get all fixed workers

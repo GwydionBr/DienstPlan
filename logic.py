@@ -52,26 +52,66 @@ def write_to_csv(rows):
 
 def create_rows(fixed_workers, relative_workers, opening_time, dates):
     work_shifts = calculate_work_shifts(opening_time)
+
     new_row = []
     rows = []
     index = 1
 
     # First Row
     new_row.append("Arbeiter ")
-    for  date in dates:
+    for date in dates:
         new_row.append(f"{index}. {date}")
         index += 1
     rows.append(new_row)
     new_row = []
-    index = 1
+    index = 0
 
     # Fixed Worker Rows
+    rows.append(["Feste Mitarbeiter"])
+    worker_sructure = [0, 3 , 5]
     for worker in fixed_workers:
-        pass
+        new_row.append(worker.name)
+        workdays_left = worker_sructure[index]
+        for date in dates:
+            if workdays_left > 5:
+                new_row.append("Frei")
+                workdays_left -= 1
+            if 6 > workdays_left > 0:
+                new_row.append(f"{work_shifts[0][0]} - {work_shifts[0][1]}")
+                workdays_left -= 1
+            else:
+                new_row.append("Frei")
+                workdays_left = 6
+
+
+        rows.append(new_row)
+        new_row = []
+        index += 1
+
+    index = 0
+            
+
+
 
     # Relative Worker Rows
+    rows.append(["Aushilfen"])
     for worker in relative_workers:
-        pass
+        new_row.append(worker.name)
+        workdays_left = worker.workhours
+        workdays_left = worker_sructure[index]
+        for date in dates:
+            if workdays_left > 5:
+                new_row.append("Frei")
+                workdays_left -= 1
+            if 6 > workdays_left > 0:
+                new_row.append(f"{work_shifts[0][0]} - {work_shifts[0][1]}")
+                workdays_left -= 1
+            else:
+                new_row.append("Frei")
+                workdays_left = 6
+
+        rows.append(new_row)
+        new_row = []
 
     return rows
 

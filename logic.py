@@ -1,4 +1,5 @@
 import calendar
+import csv
 import locale
 from datetime import datetime
 
@@ -8,55 +9,76 @@ def get_month_input():
         if month.isdigit():
             month = int(month)
             if month >= 1 and month <= 12:
+                locale.setlocale(locale.LC_TIME, 'de_DE.UTF-8')  # Setze die Locale auf Deutsch
                 now = datetime.now()
-                 # Erstelle ein Datum basierend auf dem aktuellen Jahr und dem eingegebenen Monat
                 year = now.year
-                day = 1  # Standardmäßig den ersten Tag des Monats verwenden
-                first_date = datetime(year, month, day)
-
-                # Finde den letzten Tag des Monats
-                last_day = calendar.monthrange(year, month)[1]
-                last_date = datetime(year, month, last_day)
-
-                first_weekday = first_date.strftime('%A')
-                last_weekday = last_date.strftime('%A')
+                month_days = calendar.monthrange(year, month)
 
                 return {
-                    "dates": [
-                        first_date,
-                        last_date
-                    ],
-                    "weekdays": [
-                        first_weekday,
-                        last_weekday
-                    ]
-                }
+                    "month_days": month_days[1],
+                    "month": month,
+                    "year": year
+                    }
             else:
                 print("Bitte geben Sie eine Zahl zwischen 1 und 12 ein.\n")
         else:
             print("Bitte geben Sie eine Zahl zwischen 1 und 12 ein.\n")
 
 
-
-def create_first_row(date):
-    locale.setlocale(locale.LC_TIME, 'de_DE.UTF-8')  # Setze die Locale auf Deutsch
-    year = date.year
-    month = date.month
-    # Erstelle eine Liste aller Tage im ausgewählten Monat
-    month_days = calendar.monthrange(year, month)[1]
-    days = [datetime(year, month, day) for day in range(1, month_days + 1)]
-
+def get_weekday_list(month_data):
+    days = [datetime(month_data["year"], month_data["month"], day) for day in range(1, month_data["month_days"] + 1)]
     # Erstelle eine Liste aller Wochentage im ausgewählten Monat
-    weekdays = [f"{day.strftime('%d')}. {day.strftime('%a')}" for day in days]
-    weekdays.insert(0, "workers")
-    return {
-        "dates": days,
-        "weekdays": weekdays
-    }
+    weekdays = [f"{day.strftime('%a')}" for day in days]
 
-def create_columns(worker_data, weekdays):
-    columns = []
-    for worker in worker_data:
-        columns.append(worker[1])
-    return columns
+    return weekdays
     
+
+def calculate_month_workdays(dates):
+    # Berechne die Anzahl der Arbeitstage im ausgewählten Monat
+    workdays = 0
+    for date in dates:
+        if date != "Sa" and date != "So":
+            workdays += 1
+
+    return workdays
+
+
+def write_to_csv(rows):
+    with open('month_data.csv', mode='w', newline='') as file:
+        writer = csv.writer(file)
+        for row in rows:
+            writer.writerow(row)
+
+
+def create_rows(fixed_workers, relative_workers, opening_time, dates):
+    work_shifts = calculate_work_shifts(opening_time)
+    new_row = []
+    rows = []
+    index = 1
+
+    # First Row
+    new_row.append("Arbeiter ")
+    for  date in dates:
+        new_row.append(f"{index}. {date}")
+        index += 1
+    rows.append(new_row)
+    new_row = []
+    index = 1
+
+    # Fixed Worker Rows
+    for worker in fixed_workers:
+        pass
+
+    # Relative Worker Rows
+    for worker in relative_workers:
+        pass
+
+    return rows
+
+
+def calculate_work_shifts(opening_time):
+    start_time = opening_time[0]
+    end_time = opening_time[1]
+    first_shift = (start_time, start_time + 8)
+    second_shift = (end_time - 8, end_time)
+    return [first_shift, second_shift]

@@ -1,6 +1,6 @@
-import csv
 from db import Database 
 from logic import * 
+from worker import Worker
 
 # Start Database Connection
 db = Database()
@@ -8,28 +8,39 @@ print("")
 
 
 def main():
-    all_data = db.get_all_data()
+    # Get Month Data
     month_data = get_month_input()
-    first_row = create_first_row(month_data["dates"][0])
-    columns = create_columns(all_data["fixed_worker"], first_row["weekdays"])
-
-    file_data = {
-        "month_data": month_data,
-        "first_row": first_row,
-        "columns": columns
-    }
-    write_to_csv(file_data)
+    weekdays = get_weekday_list(month_data)
+    print(weekdays)
+    workdays = calculate_month_workdays(weekdays)
+    print(workdays)
 
 
+    # Get all fixed workers
+    fixed_worker = db.get_all_fixed_workers()
+    fixed_worker_objects = [Worker(
+        name=worker[1], 
+        workhours=workdays * 8, 
+        holiday_days=worker[2]
+        ) for worker in fixed_worker]
+
+    # Get all relative workers
+    relative_worker = db.get_all_relative_workers()
+    relative_worker_objects = [Worker(
+        name=worker[1], 
+        workhours=worker[2], 
+        holiday_days=0
+        ) for worker in relative_worker]
+
+    # Create Rows
+    rows = create_rows(
+        fixed_workers=fixed_worker_objects, 
+        relative_workers=relative_worker_objects, 
+        opening_time=(8, 16), dates=weekdays
+        )
 
 
-
-def write_to_csv(data):
-    with open('CSV-Files/month_data.csv', mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(data["first_row"]["weekdays"])
-        for column in data["columns"]:
-            writer.writerow([column] + ["true"] * (len(data["first_row"]["dates"])))
+    write_to_csv(rows)
 
 
 

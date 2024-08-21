@@ -3,6 +3,7 @@ import csv
 import locale
 from datetime import datetime
 
+
 def get_month_input():
     while True:
         month = input("Für welchen Monat möchten Sie einen Dienstplan erstellen?\n  Geben Sie 1-12 ein und drücken Sie Enter: ")
@@ -25,22 +26,28 @@ def get_month_input():
             print("Bitte geben Sie eine Zahl zwischen 1 und 12 ein.\n")
 
 
-def get_weekday_list(month_data):
+def get_month_days(month_data):
     days = [datetime(month_data["year"], month_data["month"], day) for day in range(1, month_data["month_days"] + 1)]
-    # Erstelle eine Liste aller Wochentage im ausgewählten Monat
-    weekdays = [f"{day.strftime('%a')}" for day in days]
 
-    return weekdays
+    return days
     
 
-def calculate_month_workdays(dates):
+def calculate_month_workdays(days, holidays):
     # Berechne die Anzahl der Arbeitstage im ausgewählten Monat
     workdays = 0
-    for date in dates:
-        if date != "Sa" and date != "So":
-            workdays += 1
+    days_off = 0
+    for day in days:
+        if day in holidays:
+            days_off = days_off + 1
+        elif day.weekday() >= 5:  # Samstag und Sonntag
+            days_off = days_off + 1
+        else:  # Montag bis Freitag
+            workdays = workdays + 1
 
-    return workdays
+    return {
+        "workdays": workdays,
+        "days_off": days_off
+    }
 
 
 def write_to_csv(rows):
@@ -97,7 +104,7 @@ def create_rows(fixed_workers, relative_workers, opening_time, dates):
     rows.append(["Aushilfen"])
     for worker in relative_workers:
         new_row.append(worker.name)
-        workdays_left = worker.workhours
+        workdays_left = worker.workhours_week
         workdays_left = worker_sructure[index]
         for date in dates:
             if workdays_left > 5:

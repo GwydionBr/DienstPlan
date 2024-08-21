@@ -21,7 +21,20 @@ class Database:
     def get_all_departments(self):
           self.cur.execute('SELECT * FROM public."department"')
           data = self.cur.fetchall()
-          return data
+          departments = [
+                {
+                    "id": department[0],
+                    "name": department[1],
+                    "short_name": department[2],
+                    "start_time_summer": department[3],
+                    "end_time_summer": department[4],
+                    "start_time_winter": department[5],
+                    "end_time_winter": department[6]
+                }
+                    for department in data
+          ]
+
+          return departments
     
     def get_one_department(self, id):
           self.cur.execute('SELECT * FROM public."department" WHERE "id"=%s', (id,))
@@ -31,7 +44,17 @@ class Database:
     def get_all_fixed_workers(self):
           self.cur.execute('SELECT * FROM public."DienstFixedWorker"')
           data = self.cur.fetchall()
-          return data
+          fixed_workers = [
+                {
+                    "id": fixed_worker[0],
+                    "name": fixed_worker[1],
+                    "holiday_year": fixed_worker[2],
+                    "workhours_week": fixed_worker[3],
+                }
+                    for fixed_worker in data
+          ]
+
+          return fixed_workers
     
     def get_one_fixed_worker(self, id):
           self.cur.execute('SELECT * FROM public."DienstFixedWorker" WHERE "id"=%s', (id,))
@@ -41,7 +64,15 @@ class Database:
     def get_all_relative_workers(self):
           self.cur.execute('SELECT * FROM public."DienstRelativeWorker"')
           data = self.cur.fetchall()
-          return data
+          relative_workers = [
+                    {
+                        "id": relative_worker[0],
+                        "name": relative_worker[1],
+                        "working_hours_month": relative_worker[2],
+                    }
+                        for relative_worker in data
+            ]
+          return relative_workers
     
     def get_one_relative_worker(self, id):
           self.cur.execute('SELECT * FROM public."DienstRelativeWorker" WHERE "id"=%s', (id,))

@@ -1,7 +1,11 @@
 from db import Database 
 from logic import * 
-from worker import Worker
-
+from department import Department
+from relative_worker import RelativeWorker
+from fixed_worker import FixedWorker
+from dienstplan import Dienstplan
+import holidays
+from datetime import datetime
 # Start Database Connection
 db = Database()
 print("")
@@ -9,41 +13,40 @@ print("")
 
 def main():
     # Get Month Data
-    month_data = get_month_input()
-    weekdays = get_weekday_list(month_data)
-    workdays = calculate_month_workdays(weekdays)
-
+    month_days = get_month_days(get_month_input())
+    bayern_holidays = holidays.Germany(state='BY',  years=datetime.now().year)
+    workdays = calculate_month_workdays(month_days, bayern_holidays)
+    print(f"Arbeitstage: {workdays['workdays']}")
+    print(f"Freie Tage: {workdays['days_off']}")
 
     # Get all fixed workers
     fixed_worker = db.get_all_fixed_workers()
-    fixed_worker_objects = [Worker(
-        name=worker[1], 
-        workhours=workdays * 8, 
-        holiday_days=worker[2]
+    fixed_worker_objects = [FixedWorker(
+        worker
         ) for worker in fixed_worker]
 
     # Get all relative workers
     relative_worker = db.get_all_relative_workers()
-    relative_worker_objects = [Worker(
-        name=worker[1], 
-        workhours=worker[2], 
-        holiday_days=0
+    relative_worker_objects = [RelativeWorker(
+        worker
         ) for worker in relative_worker]
 
-    # Create Rows
-    rows = create_rows(
-        fixed_workers=fixed_worker_objects, 
-        relative_workers=relative_worker_objects, 
-        opening_time=(8, 16), dates=weekdays
+    # Get all departments
+    departments = db.get_all_departments()
+    department_objects = [Department(
+        department
+        ) for department in departments]
+
+    # Create Dienstplan Object
+    dienstplan = Dienstplan(
+        name="Dienstplan",
+        departments=department_objects,
+        fixed_workers=fixed_worker_objects,
+        relative_workers=relative_worker_objects,
+        month_data=month_data
         )
 
-
-    write_to_csv(rows)
-
-
-
-
-try: 
+try:
     main()
 finally:
     db.close()

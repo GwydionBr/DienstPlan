@@ -16,9 +16,13 @@ def main():
     month_days = get_month_days(get_month_input())
     bayern_holidays = holidays.Germany(state='BY',  years=datetime.now().year)
     workdays = calculate_month_workdays(month_days, bayern_holidays)
-    print(f"Arbeitstage: {workdays['workdays']}")
-    print(f"Freie Tage: {workdays['days_off']}")
-
+    month_data = {
+        "month_days": month_days,
+        "month": month_days[0].month,
+        "year": month_days[0].year,
+        "workdays": workdays["workdays"],
+        "days_off": workdays["days_off"]
+    }
     # Get all fixed workers
     fixed_worker = db.get_all_fixed_workers()
     fixed_worker_objects = [FixedWorker(

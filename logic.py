@@ -14,7 +14,6 @@ def get_month_input():
                 now = datetime.now()
                 year = now.year
                 month_days = calendar.monthrange(year, month)
-
                 return {
                     "month_days": month_days[1],
                     "month": month,
@@ -28,7 +27,6 @@ def get_month_input():
 
 def get_month_days(month_data):
     days = [datetime(month_data["year"], month_data["month"], day) for day in range(1, month_data["month_days"] + 1)]
-
     return days
     
 
@@ -43,7 +41,6 @@ def calculate_month_workdays(days, holidays):
             days_off = days_off + 1
         else:  # Montag bis Freitag
             workdays = workdays + 1
-
     return {
         "workdays": workdays,
         "days_off": days_off
@@ -96,9 +93,6 @@ def create_rows(fixed_workers, relative_workers, opening_time, dates):
         index += 1
 
     index = 0
-            
-
-
 
     # Relative Worker Rows
     rows.append(["Aushilfen"])

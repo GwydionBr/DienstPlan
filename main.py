@@ -1,5 +1,5 @@
-from db import Database 
-from logic import * 
+from db import Database
+from logic import *
 from department import Department
 from relative_worker import RelativeWorker
 from fixed_worker import FixedWorker
@@ -57,3 +57,19 @@ finally:
     print("")
 
 
+
+
+# from flask import Flask, render_template
+# from flaskwebgui import FlaskUI
+#
+# app = Flask(__name__)
+#
+# ui= FlaskUI(app=app, server="flask",  width=500, height=500)
+#
+# @app.route('/')
+# def index():
+#     return render_template('index.html')
+#
+#
+# if __name__ == '__main__':
+#     ui.run()

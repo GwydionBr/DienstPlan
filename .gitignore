@@ -1,3 +1,4 @@
 /.env
 /.venv
 /month_data.csv
+/.idea

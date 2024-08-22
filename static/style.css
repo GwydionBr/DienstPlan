@@ -1,4 +1,14 @@
-p {
-    color: red;
+.exit {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px;
+    cursor: pointer;
+    color: #fff;
+    background-color: #f00;
+    border: none;
+    border-radius: 50%;
     font-size: 20px;
+    font-weight: bold;
+    transition: background-color 0.3s;
 }

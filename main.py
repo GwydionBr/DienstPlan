@@ -56,20 +56,20 @@ finally:
     db.close()
     print("")
 
-
-
-
 # from flask import Flask, render_template
 # from flaskwebgui import FlaskUI
-#
+
 # app = Flask(__name__)
-#
-# ui= FlaskUI(app=app, server="flask",  width=500, height=500)
-#
+
+# ui= FlaskUI(app=app, server="flask",  width=800, height=600)
+
 # @app.route('/')
 # def index():
 #     return render_template('index.html')
-#
-#
+
+# @app.route('/test')
+# def test():
+#     return render_template('test.html')
+
 # if __name__ == '__main__':
 #     ui.run()

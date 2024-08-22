@@ -54,4 +54,36 @@ def write_to_csv(rows):
             writer.writerow(row)
 
 
+def create_row_fixed_worker(worker,  month_data):
+        new_row = []
+        new_row.append(worker.name)
+        workdays_left = worker.workhours_week
+        for day in month_data["month_days"]:
+          if workdays_left > 5:
+            new_row.append("Frei")
+            workdays_left -= 1
+          if 6 > workdays_left > 0:
+            new_row.append("8:00 - 16:00")
+            workdays_left -= 1
+          else:
+            new_row.append("Frei")
+            workdays_left = 6
+        return new_row
+
+
+def create_row_relative_worker(worker, month_data):
+    new_row = []
+    new_row.append(worker.name)
+    workdays_left = worker.workhours_week
+    for day in month_data["month_days"]:
+        if workdays_left > 5:
+            new_row.append("Frei")
+            workdays_left -= 1
+        if 6 > workdays_left > 0:
+            new_row.append("8:00 - 16:00")
+            workdays_left -= 1
+        else:
+            new_row.append("Frei")
+            workdays_left = 6
+    return new_row
 

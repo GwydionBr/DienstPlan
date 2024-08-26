@@ -4,9 +4,13 @@ class RelativeWorker:
         self.id = relative_worker["id"]
         self.name = relative_worker["name"]
         self.workhours_left_month = relative_worker["working_hours_month"]
-    def decrase_workdays(self, days):
+        self.departments = relative_worker["departments"]
+
+
+    def decrease_workhours_left(self, days):
       self.workhours_left_month -= days
 
-    def increase_workdays(self, days):
+
+    def increase_workhours_left(self, days):
       self.workhours_left_month += days
 

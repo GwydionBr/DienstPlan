@@ -90,3 +90,11 @@ departments = [
         "max_workers": 2
     }
 ]
+
+# month_data = {
+#         "month_days": month_days,
+#         "month": month_days[0].month,
+#         "year": month_days[0].year,
+#         "workdays": workdays["workdays"],
+#         "days_off": workdays["days_off"]
+#     }

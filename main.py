@@ -27,7 +27,8 @@ def main():
     # Get all fixed workers
     # fixed_worker = db.get_all_fixed_workers()
     fixed_worker_objects = [FixedWorker(
-        worker
+        fixed_worker=worker, 
+        workdays=month_data["workdays"]
         ) for worker in fixed_worker]
 
     # Get all relative workers
@@ -42,11 +43,6 @@ def main():
         department
         ) for department in departments]
 
-    print(f"""Departments:  {department_objects}
-            Fixed Workers: {fixed_worker_objects}
-            Relative Workers: {relative_worker_objects}
-            Month Data: {month_data}
-          """)
     # Create Dienstplan Object
     dienstplan = Dienstplan(
         departments=department_objects,
@@ -54,11 +50,12 @@ def main():
         relative_workers=relative_worker_objects,
         month_data=month_data
         )
-
+    
+    write_to_csv(dienstplan.create_rows())
 try:
     main()
 finally:
-    db.close()
+    # db.close()
     print("")
 
 # from flask import Flask, render_template
